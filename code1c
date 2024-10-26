@@ -1,0 +1,63 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+
+    // Input the number of processes
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    int at[n], bt[n], ct[n], tat[n], wt[n], p[n];
+
+    // Input arrival time and burst time for each process
+    for (int i = 0; i < n; i++) {
+        p[i] = i + 1; // process id
+        printf("Enter Arrival Time and Burst Time for Process %d: ", i + 1);
+        scanf("%d %d", &at[i], &bt[i]);
+    }
+
+    // Sort by arrival time
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (at[j] > at[j + 1]) {
+                // Swap arrival time
+                int temp = at[j];
+                at[j] = at[j + 1];
+                at[j + 1] = temp;
+
+                // Swap burst time
+                temp = bt[j];
+                bt[j] = bt[j + 1];
+                bt[j + 1] = temp;
+
+                // Swap process ID
+                temp = p[j];
+                p[j] = p[j + 1];
+                p[j + 1] = temp;
+            }
+        }
+    }
+
+    int currentTime = 0;
+
+    // Calculate CT, TAT, WT for each process
+    for (int i = 0; i < n; i++) {
+        if (currentTime < at[i]) {
+            currentTime = at[i]; // If CPU is idle, set current time to arrival time
+        }
+
+        ct[i] = currentTime + bt[i]; // Completion time
+        currentTime = ct[i];         // Update current time
+
+        tat[i] = ct[i] - at[i]; // Turnaround time
+        wt[i] = tat[i] - bt[i]; // Waiting time
+    }
+
+    // Output the result
+    printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n", p[i], at[i], bt[i], ct[i], tat[i], wt[i]);
+    }
+
+    return 0;
+}
